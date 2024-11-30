@@ -7,6 +7,7 @@ plugins {
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.kotlinxSerialization)
+    alias(libs.plugins.ksp)
 }
 
 kotlin {
@@ -54,6 +55,8 @@ kotlin {
             implementation(libs.koin.core)
             implementation(libs.koin.compose.viewmodel)
             implementation(libs.navigation.compose)
+
+            implementation(libs.kotlin.inject.runtime)
         }
     }
 }
@@ -80,4 +83,13 @@ android {
 
 dependencies {
     debugImplementation(libs.androidx.compose.ui.tooling)
+
+    // 1. Configure code generation into the common source set
+//    kspCommonMainMetadata(libs.kotlinInject)
+
+    // 2. Configure code generation into each KMP target source set
+    add("kspIosX64", libs.kotlin.inject.compiler)
+    add("kspIosArm64", libs.kotlin.inject.compiler)
+    add("kspIosSimulatorArm64", libs.kotlin.inject.compiler)
+    add("kspAndroid", libs.kotlin.inject.compiler)
 }
