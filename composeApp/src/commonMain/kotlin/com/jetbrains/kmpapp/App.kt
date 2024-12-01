@@ -13,6 +13,7 @@ import com.slack.circuit.backstack.rememberSaveableBackStack
 import com.slack.circuit.foundation.CircuitCompositionLocals
 import com.slack.circuit.foundation.NavigableCircuitContent
 import com.slack.circuit.foundation.rememberCircuitNavigator
+import com.slack.circuitx.gesturenavigation.GestureNavigationDecoration
 
 private val appComponent by lazy { AppComponent.createKmp() }
 
@@ -30,9 +31,9 @@ fun App() {
                 NavigableCircuitContent(
                     navigator = navigator,
                     backStack = backStack,
-//                    decoration = remember(navigator) {
-//                        GestureNavigationDecoration(onBackInvoked = navigator::pop)
-//                    },
+                    decoration = GestureNavigationDecoration(
+                        onBackInvoked = navigator::pop,
+                    ),
                 )
             }
         }

@@ -55,6 +55,7 @@ kotlin {
             implementation(libs.kotlin.inject.runtime)
 
             implementation(libs.circuit.foundation)
+            implementation(libs.circuit.gesture)
         }
     }
 
