@@ -21,29 +21,29 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
 import com.jetbrains.kmpapp.data.MuseumObject
 import com.jetbrains.kmpapp.screens.EmptyScreenContent
-import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun ListScreen(
-    navigateToDetails: (objectId: Int) -> Unit
+    modifier: Modifier = Modifier,
+    state: ListScreenUiState,
 ) {
-    val viewModel = koinViewModel<ListViewModel>()
-    val objects by viewModel.objects.collectAsStateWithLifecycle()
+    val eventSink = state.eventSink
 
-    AnimatedContent(objects.isNotEmpty()) { objectsAvailable ->
+    AnimatedContent(
+        modifier = modifier,
+        targetState = state.objects.isNotEmpty(),
+    ) { objectsAvailable ->
         if (objectsAvailable) {
             ObjectGrid(
-                objects = objects,
-                onObjectClick = navigateToDetails,
+                objects = state.objects,
+                onObjectClick = { objectId -> eventSink(ListScreenUiEvent.NavigateToDetail(objectId)) },
             )
         } else {
             EmptyScreenContent(Modifier.fillMaxSize())

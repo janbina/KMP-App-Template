@@ -6,20 +6,15 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
-import androidx.navigation.NavHostController
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
-import androidx.navigation.toRoute
-import com.jetbrains.kmpapp.screens.detail.DetailScreen
-import com.jetbrains.kmpapp.screens.list.ListScreen
-import kotlinx.serialization.Serializable
+import com.jetbrains.kmpapp.di.AppComponent
+import com.jetbrains.kmpapp.di.createKmp
+import com.jetbrains.kmpapp.navigation.ListScreen
+import com.slack.circuit.backstack.rememberSaveableBackStack
+import com.slack.circuit.foundation.CircuitCompositionLocals
+import com.slack.circuit.foundation.NavigableCircuitContent
+import com.slack.circuit.foundation.rememberCircuitNavigator
 
-@Serializable
-object ListDestination
-
-@Serializable
-data class DetailDestination(val objectId: Int)
+private val appComponent by lazy { AppComponent.createKmp() }
 
 @Composable
 fun App() {
@@ -27,21 +22,18 @@ fun App() {
         colorScheme = if (isSystemInDarkTheme()) darkColorScheme() else lightColorScheme()
     ) {
         Surface {
-            val navController: NavHostController = rememberNavController()
-            NavHost(navController = navController, startDestination = ListDestination) {
-                composable<ListDestination> {
-                    ListScreen(navigateToDetails = { objectId ->
-                        navController.navigate(DetailDestination(objectId))
-                    })
+            CircuitCompositionLocals(circuit = appComponent.circuit) {
+                val backStack = rememberSaveableBackStack(root = ListScreen)
+                val navigator = rememberCircuitNavigator(backStack) {
+                    // Do something when the root screen is popped, usually exiting the app
                 }
-                composable<DetailDestination> { backStackEntry ->
-                    DetailScreen(
-                        objectId = backStackEntry.toRoute<DetailDestination>().objectId,
-                        navigateBack = {
-                            navController.popBackStack()
-                        }
-                    )
-                }
+                NavigableCircuitContent(
+                    navigator = navigator,
+                    backStack = backStack,
+//                    decoration = remember(navigator) {
+//                        GestureNavigationDecoration(onBackInvoked = navigator::pop)
+//                    },
+                )
             }
         }
     }

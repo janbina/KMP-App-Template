@@ -5,6 +5,9 @@ import com.jetbrains.kmpapp.data.KtorMuseumApi
 import com.jetbrains.kmpapp.data.MuseumApi
 import com.jetbrains.kmpapp.data.MuseumRepository
 import com.jetbrains.kmpapp.data.MuseumStorage
+import com.jetbrains.kmpapp.navigation.CircuitPresenterFactory
+import com.jetbrains.kmpapp.navigation.CircuitUiFactory
+import com.slack.circuit.foundation.Circuit
 import io.ktor.client.HttpClient
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.http.ContentType
@@ -18,7 +21,7 @@ import me.tatarka.inject.annotations.Provides
 @Component
 abstract class AppComponent {
 
-    abstract val repo: MuseumRepository
+    abstract val circuit: Circuit
 
     @AppScope
     @Provides
@@ -30,6 +33,18 @@ abstract class AppComponent {
                 json(json, contentType = ContentType.Any)
             }
         }
+    }
+
+    @Provides
+    @AppScope
+    fun provideCircuit(
+        uiFactory: CircuitUiFactory,
+        presenterFactory: CircuitPresenterFactory,
+    ): Circuit {
+        return Circuit.Builder()
+            .addUiFactory(uiFactory)
+            .addPresenterFactory(presenterFactory)
+            .build()
     }
 
     protected val KtorMuseumApi.bind: MuseumApi
