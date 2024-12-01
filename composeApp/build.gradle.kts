@@ -87,13 +87,14 @@ android {
 
 dependencies {
     debugImplementation(libs.androidx.compose.ui.tooling)
+    ksp(libs.kotlin.inject.compiler)
 
     // 1. Configure code generation into the common source set
 //    kspCommonMainMetadata(libs.kotlinInject)
 
     // 2. Configure code generation into each KMP target source set
-    add("kspIosX64", libs.kotlin.inject.compiler)
-    add("kspIosArm64", libs.kotlin.inject.compiler)
-    add("kspIosSimulatorArm64", libs.kotlin.inject.compiler)
-    add("kspAndroid", libs.kotlin.inject.compiler)
+//    add("kspIosX64", libs.kotlin.inject.compiler)
+//    add("kspIosArm64", libs.kotlin.inject.compiler)
+//    add("kspIosSimulatorArm64", libs.kotlin.inject.compiler)
+//    add("kspAndroid", libs.kotlin.inject.compiler)
 }
