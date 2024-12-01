@@ -1,4 +1,5 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import org.jetbrains.kotlin.gradle.plugin.KotlinPlatformType
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
@@ -59,10 +60,21 @@ kotlin {
         }
     }
 
-    compilerOptions.freeCompilerArgs.addAll(
-        "-P",
-        "plugin:org.jetbrains.kotlin.parcelize:additionalAnnotation=com.jetbrains.kmpapp.util.CommonParcelize",
-    )
+    targets.configureEach {
+        val isAndroidTarget = platformType == KotlinPlatformType.androidJvm
+        compilations.configureEach {
+            compileTaskProvider.configure {
+                compilerOptions {
+                    if (isAndroidTarget) {
+                        freeCompilerArgs.addAll(
+                            "-P",
+                            "plugin:org.jetbrains.kotlin.parcelize:additionalAnnotation=com.jetbrains.kmpapp.util.Parcelize",
+                        )
+                    }
+                }
+            }
+        }
+    }
 }
 
 android {
@@ -88,13 +100,4 @@ android {
 dependencies {
     debugImplementation(libs.androidx.compose.ui.tooling)
     ksp(libs.kotlin.inject.compiler)
-
-    // 1. Configure code generation into the common source set
-//    kspCommonMainMetadata(libs.kotlinInject)
-
-    // 2. Configure code generation into each KMP target source set
-//    add("kspIosX64", libs.kotlin.inject.compiler)
-//    add("kspIosArm64", libs.kotlin.inject.compiler)
-//    add("kspIosSimulatorArm64", libs.kotlin.inject.compiler)
-//    add("kspAndroid", libs.kotlin.inject.compiler)
 }

@@ -1,13 +1,12 @@
 package com.jetbrains.kmpapp.navigation
 
-import com.jetbrains.kmpapp.util.CommonParcelable
-import com.jetbrains.kmpapp.util.CommonParcelize
+import com.jetbrains.kmpapp.util.Parcelize
 import com.slack.circuit.runtime.screen.Screen
 
-@CommonParcelize
-data object ListScreen : Screen, CommonParcelable
+@Parcelize
+data object ListScreen : Screen
 
-@CommonParcelize
+@Parcelize
 data class DetailScreen(
     val objectId: Int,
-) : Screen, CommonParcelable
+) : Screen
